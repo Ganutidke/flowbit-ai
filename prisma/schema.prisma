@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+//generator client {
+//  provider = "prisma-client"
+//  output   = "../src/generated/prisma"
+//}
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/* ─────────────── Core Entities ─────────────── */
+
+model Vendor {
+  id           String   @id @default(uuid())
+  sourceId     String?  // vendor.id from JSON
+  path         String?  // vendor.path
+  name         String   @unique          
+  confidence   Float?
+  taxId        String?
+  taxIdId      String?
+  taxIdPath    String?
+  taxIdConf    Float?
+  partyNumber  String?
+  partyId      String?
+  partyPath    String?
+  partyConf    Float?
+  invoices     Invoice[]
+  createdAt    DateTime @default(now())
+}
+
+model Customer {
+  id                String   @id @default(uuid())
+  sourceId          String?  // customer.id
+  path              String?  // customer.path
+  name         String   @unique         
+  nameFieldId       String?  // customer.value.customerName.id
+  namePath          String?  // customer.value.customerName.path
+  nameConfidence    Float?
+  address           String?  // customer.value.customerAddress.value
+  addressFieldId    String?
+  addressPath       String?
+  addressConfidence Float?
+  invoices          Invoice[]
+  createdAt         DateTime @default(now())
+}
+
+model Invoice {
+  id              String    @id @default(uuid())
+  invoiceNumber   String?
+  invoiceDate     DateTime?
+  deliveryDate    DateTime?
+  currency        String?
+  subtotal        Float?
+  totalTax        Float?
+  total           Float?
+  status          String?
+  vendorId        String?
+  customerId      String?
+  vendor          Vendor?   @relation(fields: [vendorId], references: [id])
+  customer        Customer? @relation(fields: [customerId], references: [id])
+  payments        Payment[]
+  lineItems       LineItem[]
+  createdAt       DateTime  @default(now())
+}
+
+model Payment {
+  id              String    @id @default(uuid())
+  invoiceId       String
+  dueDate         DateTime?
+  netDays         Int?
+  discountedTotal Float?
+  discountPercent Float?
+  invoice         Invoice   @relation(fields: [invoiceId], references: [id])
+  createdAt       DateTime  @default(now())
+}
+
+model LineItem {
+  id           String    @id @default(uuid())
+  invoiceId    String
+  description  String?
+  quantity     Int?
+  unitPrice    Float?
+  totalPrice   Float?
+  vatRate      Float?
+  invoice      Invoice   @relation(fields: [invoiceId], references: [id])
+  createdAt    DateTime  @default(now())
+}
