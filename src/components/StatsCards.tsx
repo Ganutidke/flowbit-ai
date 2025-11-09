@@ -12,7 +12,7 @@ export default function StatsCards({ data }: any) {
       change: data.spendChange || 0,
       positive: true,
       color: "#43b077",
-      indicator: "/images/img_group_68.png",
+      indicator: "/images/img_group_68.svg",
     },
     {
       title: "Total Invoices Processed",
@@ -21,7 +21,7 @@ export default function StatsCards({ data }: any) {
       change: data.invoicesChange || 0,
       positive: true,
       color: "#2e9f02",
-      indicator: "/images/img_group_68.png",
+      indicator: "/images/img_group_68.svg",
     },
     {
       title: "Documents Uploaded",
@@ -30,7 +30,7 @@ export default function StatsCards({ data }: any) {
       change: data.documentsChange || 0,
       positive: data.documentsChange >= 0 ? true : false,
       color: data.documentsChange >= 0 ? "#2e9f02" : "#ed1c24",
-      indicator: "/images/img_group_68_red_700.png",
+      indicator: "/images/img_group_68_red_700.svg",
     },
     {
       title: "Average Invoice Value",

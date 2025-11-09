@@ -1,5 +1,6 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState, useRef } from "react";
 import {
   Chart as ChartJS,
@@ -40,8 +41,8 @@ export default function CashOutflowForecast() {
     fetchData();
   }, []);
 
-  if (loading) return <div className="card p-4 h-64">Loading...</div>;
-  if (!data.length) return <div className="card p-4 h-64">No forecast data</div>;
+  if (loading) return <CashOutflowForecastSkeleton/>;
+  if (!data.length) return <div className="card p-4 h-64 text-black text-center">No forecast data</div>;
 
   const labels = data.map((r) => r.range);
   const totals = data.map((r) => r.total);
@@ -109,7 +110,6 @@ export default function CashOutflowForecast() {
 
   return (
     <div className="border border-[#e4e4e7] max-h-[437px] h-full justify-between rounded-[12px] bg-white p-4 flex flex-col items-start shadow-sm hover:shadow-md transition-all duration-300">
-      {/* Header */}
       <div className="flex flex-col justify-start items-start w-full mb-3">
         <h3 className="text-sm font-semibold text-[#1b1b1b]">
           Cash Outflow Forecast
@@ -119,29 +119,37 @@ export default function CashOutflowForecast() {
         </p>
       </div>
 
-      {/* Chart container */}
       <div className="relative w-full h-[280px] overflow-hidden">
-        {/* ✅ Properly aligned background bars */}
-        {/* <div
-          className="absolute left-[76px]  inset-x-9 bottom-[38px] flex justify-between"
-          style={{ top: "15px" }}
-        >
-          {data.map((_, i) => (
-            <div
-              key={i}
-              className="flex-1 mx-2 bg-[#F3F4F6] rounded-t-[10px]"
-              style={{
-                height: "calc(100% - 40px)", // prevents overflow
-                maxWidth: "40px",
-              }}
-            ></div>
-          ))}
-        </div> */}
-
-        {/* Foreground Chart */}
         <div className="relative w-full h-full z-10">
           <Bar ref={chartRef} data={chartData} options={options} />
         </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+
+export function CashOutflowForecastSkeleton() {
+  return (
+    <div className="border border-[#e4e4e7] max-h-[437px] h-full rounded-[12px] bg-white p-4 flex flex-col justify-between shadow-sm">
+      <div className="flex flex-col justify-start items-start w-full mb-3 space-y-2">
+        <Skeleton className="h-4 w-44" /> 
+        <Skeleton className="h-3 w-56" />
+      </div>
+
+      <div className="relative w-full h-[280px] flex items-end justify-between px-2">
+     
+        {[...Array(6)].map((_, i) => (
+          <Skeleton
+            key={i}
+            className="w-[40px] rounded-md"
+            style={{
+              height: `${40 + i * 25}px`, 
+            }}
+          />
+        ))}
       </div>
     </div>
   );

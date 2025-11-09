@@ -1,26 +1,60 @@
-// app/api/chat-with-data/route.ts
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const { query } = body;
-    const VANNA = process.env.VANNA_API_BASE_URL;
-    if (!VANNA) return new Response(JSON.stringify({ error: "VANNA not configured" }), { status: 500 });
+import { NextRequest } from "next/server";
 
-    const r = await fetch(`${VANNA}/parse-sql`, {
-      method: 'POST',
+export async function POST(req: NextRequest) {
+  const { query } = await req.json();
+
+  const vannaURL = "https://bigquery.vanna.ai/api/v0/chat_sse";
+
+  try {
+    const response = await fetch(vannaURL, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.VANNA_API_KEY || ''}`
+        "Content-Type": "application/json",
+        "VANNA-API-KEY": process.env.VANNA_API_KEY!,
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({
+        message: query,
+        user_email: "gtidke332@gmail.com",
+        agent_id: "flowbitaitracker",
+        acceptable_responses: ["text", "sql", "dataframe", "image"],
+      }),
     });
 
-    const data = await r.json();
-    // Expected Vanna response: { sql: "...", params: [], run: true/false }
-    // If Vanna returns SQL, we optionally execute it against postgres (danger: validate)
-    return new Response(JSON.stringify(data), { status: 200 });
-  } catch (err) {
-    console.error(err);
-    return new Response(JSON.stringify({ error: 'internal' }), { status: 500 });
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("❌ Vanna Error:", errText);
+      return new Response(
+        JSON.stringify({ error: "Vanna API request failed", detail: errText }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Stream back the SSE response directly to frontend
+    const encoder = new TextEncoder();
+    const readable = new ReadableStream({
+      async start(controller) {
+        const reader = response.body!.getReader();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          controller.enqueue(value);
+        }
+        controller.close();
+      },
+    });
+
+    return new Response(readable, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+    });
+  } catch (err: any) {
+    console.error("⚠️ Error:", err);
+    return new Response(
+      JSON.stringify({ error: "Failed to connect to Vanna", detail: err.message }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }

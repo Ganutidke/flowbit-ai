@@ -10,7 +10,7 @@ const Header = ({ className, ...props }: HeaderProps) => {
   return (
     <header
       className={twMerge(
-        'sticky top-0 w-full bg-white border-b border-[#e4e4e7] z-10',
+        'sticky top-0 w-full h-16 bg-white border-b border-[#e4e4e7] z-10',
         className
       )}
       {...props}
@@ -23,13 +23,13 @@ const Header = ({ className, ...props }: HeaderProps) => {
             alt="Panel"
             className="hidden lg:block w-5 h-5"
           />
-          <span className="text-sm ml-12 lg:ml-0 text-center justify-center flex font-medium text-[#1b1b1b]">Dashboard</span>
+          <span className="text-sm ml-12 mb-1 lg:ml-0 text-center justify-center flex font-medium text-[#1b1b1b]">Dashboard</span>
         </div>
 
         {/* Right Section */}
         <div className="flex items-center gap-3">
           <img
-            src="/images/img_rectangle_1.png"
+            src="/images/img_rectangle_1.svg"
             alt="User Avatar"
             className="w-9 h-9 rounded-lg object-cover"
           />
@@ -40,7 +40,7 @@ const Header = ({ className, ...props }: HeaderProps) => {
           <img
             src="/images/img_vector.svg"
             alt="Dropdown"
-            className=" h-4"
+            className=" h-3.5"
           />
         </div>
       </div>

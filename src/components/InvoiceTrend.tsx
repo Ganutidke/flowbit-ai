@@ -41,8 +41,8 @@ export default function InvoiceTrend() {
     fetchData();
   }, []);
 
-  if (loading) return <div className="card p-4 h-64">Loading...</div>;
-  if (!data.length) return <div className="card p-4 h-64">No trend data</div>;
+  if (loading) return <InvoiceTrendSkeleton/>;
+  if (!data.length) return <div className="card p-4 h-64 text-center text-black">No trend data</div>;
 
   const labels = data.map((r) => r.month);
   const spend = data.map((r) => r.totalSpend);
@@ -146,6 +146,28 @@ export default function InvoiceTrend() {
 
       <div className="h-[320px] p-2">
         <Line ref={chartRef} data={chartData} options={options} />
+      </div>
+    </div>
+  );
+}
+
+
+import { Skeleton } from "@/components/ui/skeleton";
+
+export function InvoiceTrendSkeleton() {
+  return (
+    <div className="border border-[#e4e4e7] rounded-[8px] bg-white shadow-sm">
+      {/* Header Skeleton */}
+      <div className="flex justify-between items-center p-4 pb-2">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-48 bg-gray-300/60" /> {/* Title */}
+          <Skeleton className="h-3 w-32 bg-gray-300/60" /> {/* Subtitle */}
+        </div>
+      </div>
+
+      {/* Chart Skeleton */}
+      <div className="p-2">
+        <Skeleton className="h-[320px] w-full rounded-md bg-gray-300/60" />
       </div>
     </div>
   );

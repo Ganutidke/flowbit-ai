@@ -38,8 +38,8 @@ export default function VendorBar() {
     load();
   }, []);
 
-  if (loading) return <div className="card p-4 h-64 ">Loading...</div>;
-  if (!data.length) return <div className="card p-4 h-64">No vendor data</div>;
+  if (loading) return <VendorBarSkeleton/>;
+  if (!data.length) return <div className="card p-4 h-64 text-black text-center">No vendor data</div>;
 
   const labels = data.map((v) => v.vendor);
   const spends = data.map((v) => v.spend);
@@ -113,6 +113,28 @@ export default function VendorBar() {
       {/* Chart */}
       <div className="h-80 px-3 pb-4">
         <Bar data={chartData} options={options} />
+      </div>
+    </div>
+  );
+}
+
+
+import { Skeleton } from "@/components/ui/skeleton";
+
+export  function VendorBarSkeleton() {
+  return (
+    <div className="border border-[#e4e4e7] rounded-[8px] bg-white shadow-sm">
+      {/* Header Skeleton */}
+      <div className="flex justify-between items-center p-4 pb-2">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-44 bg-gray-300/60" /> {/* Title */}
+          <Skeleton className="h-3 w-40 bg-gray-300/60" /> {/* Subtitle */}
+        </div>
+      </div>
+
+      {/* Chart Skeleton */}
+      <div className="px-3 pb-4">
+        <Skeleton className="h-80 w-full rounded-md bg-gray-300/60" />
       </div>
     </div>
   );
