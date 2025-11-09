@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function GET() {
-  // last 12 months monthly invoice count & spend
   const now = new Date();
   const months = Array.from({ length: 12 }).map((_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);

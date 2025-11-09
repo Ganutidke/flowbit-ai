@@ -22,6 +22,5 @@ export async function GET() {
     console.error(err);
     return new Response(JSON.stringify({ error: "Internal" }), { status: 500 });
   } finally {
-    // await prisma.$disconnect();
   }
 }

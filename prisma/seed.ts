@@ -12,9 +12,6 @@ async function main() {
   for (const item of data) {
     const llm = item.extractedData?.llmData || {};
 
-    /* ────────────────────────────────
-       Extract Vendor
-    ──────────────────────────────── */
     const vendor = llm.vendor || {};
     const vendorVal = vendor.value || {};
     const vendorName = vendorVal.vendorName?.value || null;
@@ -35,9 +32,6 @@ async function main() {
         })
       : null;
 
-    /* ────────────────────────────────
-       Extract Customer
-    ──────────────────────────────── */
     const customer = llm.customer || {};
     const custVal = customer.value || {};
     const custName = custVal.customerName?.value || null;
@@ -56,9 +50,6 @@ async function main() {
         })
       : null;
 
-    /* ────────────────────────────────
-       Extract Invoice
-    ──────────────────────────────── */
     const invoice = llm.invoice?.value || {};
     const summary = llm.summary?.value || {};
     const invoiceNumber = invoice.invoiceId?.value || null;
@@ -90,9 +81,7 @@ async function main() {
       },
     });
 
-    /* ────────────────────────────────
-       Extract Line Items
-    ──────────────────────────────── */
+
     const lineItemsValue = llm.lineItems?.value?.items?.value;
     const lineItems = Array.isArray(lineItemsValue) ? lineItemsValue : [];
 
@@ -115,15 +104,9 @@ async function main() {
       });
     }
 
-    /* ────────────────────────────────
-       Extract Payment
-    ──────────────────────────────── */
-    /* ────────────────────────────────
-   Extract Payment (Enhanced)
-──────────────────────────────── */
+
     const pay = llm.payment?.value || {};
 
-    // Generate a realistic random due date (1–90 days ahead)
     const randomDays = Math.floor(Math.random() * 90) + 1;
     const dueDate = pay.dueDate?.value
       ? new Date(pay.dueDate.value)
@@ -133,7 +116,6 @@ async function main() {
           return d;
         })();
 
-    // Derive a realistic total if missing
     const baseTotal = parseFloat(llm.summary?.value?.invoiceTotal?.value || 0);
     const discountPercent =
       parseFloat(pay.discountPercentage?.value || 0) ||
