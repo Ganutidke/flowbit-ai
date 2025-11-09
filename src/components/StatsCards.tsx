@@ -1,8 +1,3 @@
-"use client";
-
-import { Indicator } from "@radix-ui/react-checkbox";
-import { TrendingUp, TrendingDown } from "lucide-react";
-
 export default function StatsCards({ data }: any) {
   const metrics = [
     {

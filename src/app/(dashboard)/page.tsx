@@ -1,6 +1,3 @@
-import Sidebar from "@/components/common/Sidebar";
-import Header from "@/components/common/Header";
-
 import StatsCards from "@/components/StatsCards";
 import InvoiceTrend from "@/components/InvoiceTrend";
 import VendorBar from "@/components/VendorBar";
